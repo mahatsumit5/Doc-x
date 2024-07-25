@@ -4,7 +4,7 @@ import { RoomProvider, ClientSideSuspense } from "@liveblocks/react/suspense";
 import Header from "./Header";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { Editor } from "./editor/Editor";
-const collaborativeRoom = () => {
+const CollaborativeRoom = () => {
   return (
     <RoomProvider id="my-room">
       <ClientSideSuspense fallback={<div>Loading…</div>}>
@@ -27,4 +27,4 @@ const collaborativeRoom = () => {
   );
 };
 
-export default collaborativeRoom;
+export default CollaborativeRoom;

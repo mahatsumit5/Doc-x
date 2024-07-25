@@ -10,7 +10,7 @@ export const createDocuments = async ({
   const roomId = nanoid();
   try {
     const metadata = {
-      crateorId: userId,
+      creatorId: userId,
       email,
       title: "untitled",
     };
