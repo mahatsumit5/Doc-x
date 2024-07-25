@@ -9,7 +9,7 @@ const Loader = () => {
         alt="loader"
         width={32}
         height={32}
-        src={"/assests/ions/loader.svg"}
+        src={"/assets/icons/loader.svg"}
       />
       Loading...
     </div>
