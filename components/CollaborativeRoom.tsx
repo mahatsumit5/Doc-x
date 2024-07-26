@@ -8,6 +8,7 @@ import ActiveCollaborator from "./ui/ActiveCollaborator";
 import { Input } from "./ui/input";
 import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
+import { updateDocuments } from "@/lib/actions/rooms.actions";
 const CollaborativeRoom = ({
   roomId,
   roomMetadata,
@@ -33,11 +34,23 @@ const CollaborativeRoom = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  const updataTitltHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+
+  useEffect(() => {
+    if (editing && InputRef.current) {
+      InputRef.current.focus();
+    }
+  }, [editing]);
+
+  const updataTitltHandler = async (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
     if (e.key === "Enter") {
       setloading(true);
     }
     try {
+      if (documentTitle !== roomMetadata.title) {
+        const updatedDocument = await updateDocuments(roomId, documentTitle);
+      }
     } catch (error) {
       console.log(error);
     }
