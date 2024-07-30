@@ -6,9 +6,9 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { Editor } from "./editor/Editor";
 import ActiveCollaborator from "./ui/ActiveCollaborator";
 import { Input } from "./ui/input";
-import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 import { updateDocuments } from "@/lib/actions/rooms.actions";
+import Loader from "./Loader";
 const CollaborativeRoom = ({
   roomId,
   roomMetadata,
@@ -20,28 +20,7 @@ const CollaborativeRoom = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const InputRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
-        setEditing(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (editing && InputRef.current) {
-      InputRef.current.focus();
-    }
-  }, [editing]);
-
-  const updataTitltHandler = async (
+  const updataTitleHandler = async (
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (e.key === "Enter") {
@@ -50,15 +29,41 @@ const CollaborativeRoom = ({
     try {
       if (documentTitle !== roomMetadata.title) {
         const updatedDocument = await updateDocuments(roomId, documentTitle);
+        if (updatedDocument) {
+          setEditing(false);
+        }
       }
     } catch (error) {
       console.log(error);
     }
     setloading(false);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
+        setEditing(false);
+        updateDocuments(roomId, documentTitle);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [roomId, documentTitle]);
+
+  useEffect(() => {
+    if (editing && InputRef.current) {
+      InputRef.current.focus();
+    }
+  }, [editing]);
+
   return (
     <RoomProvider id={roomId}>
-      <ClientSideSuspense fallback={<div>Loading…</div>}>
+      <ClientSideSuspense fallback={<Loader />}>
         <div className="collaborative-room">
           <Header>
             <div
@@ -72,7 +77,7 @@ const CollaborativeRoom = ({
                   ref={InputRef}
                   placeholder="Enter Title"
                   onChange={(e) => setDocumentTitle(e.target.value)}
-                  onKeyDown={updataTitltHandler}
+                  onKeyDown={updataTitleHandler}
                   disabled={!editing}
                   className="document-title-input"
                 />

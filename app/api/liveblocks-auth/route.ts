@@ -1,12 +1,8 @@
+import { liveblocks } from "@/lib/liveblocks";
 import { getUserColor } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
 import { Liveblocks } from "@liveblocks/node";
 import { redirect } from "next/navigation";
-
-const liveblocks = new Liveblocks({
-  secret:
-    "sk_dev_z0iE6bWUH7MMQ6WPmXyfgvo5fTpSJ8Jc-8Yqp8Uo_SWLoKu3bQzRHzH6Wj_keEZp",
-});
 
 export async function POST(request: Request) {
   const clerkuser = await currentUser();
